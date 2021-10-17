@@ -49,4 +49,17 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(newScript, ui);
+
+	const result = new vscode.MarkdownString();
+	result.appendCodeblock("SetMissionText(string text, color = nil)", "lua");
+	result.appendMarkdown("---\nDisplays a text message at the top center of the screen.");
+
+	vscode.languages.registerHoverProvider('lua', {
+		provideHover(document, position) {
+			const hoveredWordPosition = document.getWordRangeAtPosition(position, /[\w.]+/);
+			const hoveredWord = document.getText(hoveredWordPosition);
+			if (hoveredWord == 'UserInterface.SetMissionText')
+				return new vscode.Hover(result);
+		}
+	});
 }
