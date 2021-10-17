@@ -2,7 +2,7 @@
 	"name": "vscode-openra-lua",
 	"displayName": "OpenRA Lua Language Extension",
 	"version": "0.0.1",
-	"publisher": "openra",
+	"publisher": "OpenRA developers",
 	"private": false,
 	"license": "GPL-3.0",
 	"repository": {
