@@ -1,0 +1,10 @@
+{
+	"scopeName": "source.injection",
+	"injectionSelector": "source.lua",
+	"patterns": [
+		{
+			"match": "(((UserInterface)(\\.|:))(SetMissionText))\\b(?=[(\\s{])",
+			"name": "support.function.library.lua"
+		}
+	]
+}
