@@ -62,4 +62,6 @@ export function activate(context: vscode.ExtensionContext) {
 				return new vscode.Hover(result);
 		}
 	});
+
+	vscode.workspace.getConfiguration().update('Lua.diagnostics.globals', [ 'UserInterface' ] );
 }
