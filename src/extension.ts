@@ -15,8 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const extensionPath = vscode.extensions.getExtension(extensionId)?.extensionPath;
 	const folderPath = extensionPath+"\\"+"api";
 	const config = vscode.workspace.getConfiguration("Lua");
-	config.update('Lua.workspace.library', [ folderPath ] );
-
+	config.update('Lua.workspace.userThirdParty', [ folderPath ] );
 
 	const newScript = vscode.languages.registerCompletionItemProvider('lua', {
 
