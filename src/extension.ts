@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const newScript = vscode.languages.registerCompletionItemProvider('lua', {
 
-		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+		provideCompletionItems() {
 			const snippetCompletion = new vscode.CompletionItem('New OpenRA Lua mission script.');
 			snippetCompletion.insertText = new vscode.SnippetString('WorldLoaded = function()\n\nend\n\nTick = function()\n\nend');
 			snippetCompletion.documentation = new vscode.MarkdownString("Inserts a barebone script with the function the engine will call.");
