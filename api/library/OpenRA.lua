@@ -10,6 +10,32 @@ function Tick() end
 
 ---@alias Color HSLColor
 
+---@class initTable
+---@field Location CPos
+---@field Owner Player
+---@field Facing WAngle
+---@field CreationActivityDelay integer
+---@field CenterPosition WPos
+---@field Faction string
+---@field EffectiveOwner Player
+---@field Stance UnitStance
+---@field FreeActor boolean
+---@field ParentActor ActorInitActorReference
+---@field LineBuildDirection LineBuildDirection
+---@field LineBuildParent string[]
+---@field RuntimeCargo Actor[]
+---@field Cargo string[]
+---@field DeployState DeployState
+---@field Experience integer
+---@field Health integer
+---@field HuskSpeed integer
+---@field Plug string
+---@field ProductionSpawnLocation CPos
+---@field ScriptTags string[]
+---@field TurretFacing WAngle
+---@field SpawnedByMap string
+---@field BodyAnimationFrame integer
+
 ---Global variable provided by the game scripting engine.
 Actor = { }
 
@@ -29,7 +55,7 @@ function Actor.Cost(type) end
 
 ---@param type string
 ---@param addToWorld boolean
----@param initTable table
+---@param initTable initTable
 ---@return Actor
 --- Create a new actor. initTable specifies a list of key-value pairs that defines the initial parameters for the actor's traits.
 function Actor.Create(type, addToWorld, initTable) end
