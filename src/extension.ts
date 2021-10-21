@@ -8,14 +8,17 @@
  */
 
 import * as vscode from 'vscode';
+import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
 
 	const extensionId = "vscode-openra-lua";
-	const extensionPath = vscode.extensions.getExtension(extensionId)?.extensionPath;
-	const folderPath = extensionPath+"\\"+"api";
+	let extensionPath = vscode.extensions.getExtension(extensionId)?.extensionPath;
+	if (extensionPath == undefined)
+		extensionPath = path.resolve(".", "vscode-openra-lua");
+	const folderPath = path.resolve(extensionPath, "api");
 	const config = vscode.workspace.getConfiguration("Lua");
-	config.update('Lua.workspace.userThirdParty', [ folderPath ] );
+	config.update('workspace.library', [ folderPath ], false );
 
 	const newScript = vscode.languages.registerCompletionItemProvider('lua', {
 

@@ -6,5 +6,4 @@ This is an IDE companion for the [OpenRA Lua API](https://docs.openra.net/en/lat
 
 * Execute `npm install` in the terminal.
 * Open the Folder with VS Code.
-* Copy the `api` folder to `$HOME/.vscode/extensions/vscode-openra-lua-0.0.1`
 * Press `F5` to launch it.
