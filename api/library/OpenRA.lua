@@ -8,6 +8,8 @@ function WorldLoaded() end
 --- This function will hit every game tick which by default is every 40 ms.
 function Tick() end
 
+---@alias Color HSLColor
+
 ---Global variable provided by the game scripting engine.
 Actor = { }
 
