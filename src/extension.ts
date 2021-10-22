@@ -9,16 +9,27 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const extensionId = "vscode-openra-lua";
-	let extensionPath = vscode.extensions.getExtension(extensionId)?.extensionPath;
-	if (extensionPath == undefined)
-		extensionPath = path.resolve(".", "vscode-openra-lua");
-	const folderPath = path.resolve(extensionPath, "api");
+	const apiPath = path.resolve(context.extensionPath, "api");
 	const config = vscode.workspace.getConfiguration("Lua");
-	config.update('workspace.library', [ folderPath ], false );
+	const mapPath = path.resolve(context.storagePath as string, "map");
+	fs.mkdirSync(mapPath, { recursive: true } );
+	config.update('workspace.library', [ apiPath, mapPath ], false );
+
+	for (const document of vscode.workspace.textDocuments) {
+		addMapGlobals(document, mapPath);
+	}
+
+	vscode.workspace.onDidOpenTextDocument(document => addMapGlobals(document, mapPath));
+
+	vscode.workspace.onDidCloseTextDocument(document => {
+
+		if (document.languageId == 'lua')
+			fs.rmSync(path.resolve(mapPath, path.basename(document.fileName)));
+	});
 
 	const newScript = vscode.languages.registerCompletionItemProvider('lua', {
 
@@ -34,4 +45,68 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(newScript);
+}
+
+export async function addMapGlobals(document: vscode.TextDocument, mapPath: string) {
+
+	if (!document || !document.fileName.endsWith(".lua"))
+		return;
+
+	const mapYamlPath = path.join(path.dirname(document.fileName), "map.yaml");
+	if (!fs.existsSync(mapYamlPath))
+		return;
+
+	const mapYaml = fs.readFileSync(mapYamlPath, 'utf8');
+	const lines = mapYaml.split('\n');
+	let actorSection = false;
+	let mapLua = "";
+	for (const line of lines)
+	{
+		if (line.startsWith("Actors:"))
+		{
+			actorSection = true;
+			continue;
+		}
+
+		if (actorSection)
+		{
+			if (line === "")
+			{
+				actorSection = false;
+				continue;
+			}
+
+			if (line.startsWith("\t\t"))
+				continue;
+
+			mapLua = mapLua.concat("---@type Actor\n");
+			const actorMatch = line.match("\t(\\w*): (\\w*)");
+			if (actorMatch != null)
+			{
+				mapLua = mapLua.concat("--- " + actorMatch[2] + "\n");
+				mapLua = mapLua.concat(actorMatch[1] + " = { }\n\n");
+			}
+		}
+	}
+
+	const file = path.resolve(mapPath, path.basename(document.fileName));
+
+	try {
+		if (fs.readFileSync(file).length == mapLua.length)
+			return;
+	}
+	catch {
+		// file does not exist
+	}
+
+	try {
+		fs.writeFileSync(file, mapLua);
+	}
+	catch (e) {
+		vscode.window.showErrorMessage((e as Error).message);
+	}
+
+	const answer = await vscode.window.showInformationMessage(`There are unresolved map globals.`, 'Reload', 'Dismiss');
+	if (answer == 'Reload')
+		vscode.commands.executeCommand('workbench.action.reloadWindow');
 }
