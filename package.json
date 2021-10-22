@@ -5,6 +5,7 @@
 	"publisher": "OpenRA",
 	"private": false,
 	"license": "GPL-3.0",
+	"icon": "img/icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/OpenRA/vscode-openra-lua"
