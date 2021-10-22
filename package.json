@@ -5,7 +5,7 @@
 	"categories": [ "Programming Languages", "Snippets" ],
 	"tags": [ "rts", "strategy", "game", "mission", "scripting" ],
 	"version": "0.0.1",
-	"publisher": "OpenRA",
+	"publisher": "openra",
 	"private": false,
 	"license": "GPL-3.0",
 	"icon": "img/icon.png",
