@@ -7,7 +7,7 @@
 	"license": "GPL-3.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Mailaender/vscode-openra-lua"
+		"url": "https://github.com/OpenRA/vscode-openra-lua"
 	},
 	"engines": {
 		"vscode": "^1.32.0"
