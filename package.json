@@ -3,6 +3,7 @@
 	"displayName": "OpenRA Lua Language Extension",
 	"description": "Adds game scripting API and map globals.",
 	"categories": [ "Programming Languages", "Snippets" ],
+	"tags": [ "rts", "strategy", "game", "mission", "scripting" ],
 	"version": "0.0.1",
 	"publisher": "OpenRA",
 	"private": false,
