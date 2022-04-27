@@ -73,11 +73,11 @@ export async function addMapGlobals(document: vscode.TextDocument, mapPath: stri
 			if (line.startsWith("\t\t"))
 				continue;
 
-			mapLua = mapLua.concat("---@type Actor\n");
 			const actorMatch = line.match("\t(\\w*): (\\w*)");
 			if (actorMatch != null)
 			{
 				mapLua = mapLua.concat("--- " + actorMatch[2] + "\n");
+				mapLua = mapLua.concat("---@type Actor\n");
 				mapLua = mapLua.concat(actorMatch[1] + " = { }\n\n");
 			}
 		}
