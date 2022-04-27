@@ -99,8 +99,4 @@ export async function addMapGlobals(document: vscode.TextDocument, mapPath: stri
 	catch (e) {
 		vscode.window.showErrorMessage((e as Error).message);
 	}
-
-	const answer = await vscode.window.showInformationMessage(`There are unresolved map globals.`, 'Reload', 'Dismiss');
-	if (answer == 'Reload')
-		vscode.commands.executeCommand('workbench.action.reloadWindow');
 }
