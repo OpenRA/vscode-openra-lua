@@ -25,12 +25,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.workspace.onDidOpenTextDocument(document => addMapGlobals(document, mapPath));
 
-	vscode.workspace.onDidCloseTextDocument(document => {
-
-		if (document.languageId == 'lua')
-			fs.rmSync(path.resolve(mapPath, path.basename(document.fileName)));
-	});
-
 	const newScript = vscode.languages.registerCompletionItemProvider('lua', {
 
 		provideCompletionItems() {
@@ -79,11 +73,11 @@ export async function addMapGlobals(document: vscode.TextDocument, mapPath: stri
 			if (line.startsWith("\t\t"))
 				continue;
 
-			mapLua = mapLua.concat("---@type Actor\n");
 			const actorMatch = line.match("\t(\\w*): (\\w*)");
 			if (actorMatch != null)
 			{
 				mapLua = mapLua.concat("--- " + actorMatch[2] + "\n");
+				mapLua = mapLua.concat("---@type Actor\n");
 				mapLua = mapLua.concat(actorMatch[1] + " = { }\n\n");
 			}
 		}
@@ -105,8 +99,4 @@ export async function addMapGlobals(document: vscode.TextDocument, mapPath: stri
 	catch (e) {
 		vscode.window.showErrorMessage((e as Error).message);
 	}
-
-	const answer = await vscode.window.showInformationMessage(`There are unresolved map globals.`, 'Reload', 'Dismiss');
-	if (answer == 'Reload')
-		vscode.commands.executeCommand('workbench.action.reloadWindow');
 }
