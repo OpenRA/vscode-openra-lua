@@ -83,7 +83,7 @@ export async function addMapGlobals(document: vscode.TextDocument, mapPath: stri
 			if (actorMatch != null)
 			{
 				mapLua = mapLua.concat("--- " + actorMatch[2] + "\n");
-				mapLua = mapLua.concat("---@type Actor\n");
+				mapLua = mapLua.concat("---@type actor\n");
 				mapLua = mapLua.concat(actorMatch[1] + " = { }\n\n");
 			}
 		}
