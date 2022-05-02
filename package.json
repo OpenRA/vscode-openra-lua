@@ -4,7 +4,7 @@
 	"description": "Adds game scripting API and map globals.",
 	"categories": [ "Programming Languages", "Snippets" ],
 	"tags": [ "rts", "strategy", "game", "mission", "scripting" ],
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"publisher": "openra",
 	"private": false,
 	"license": "GPL-3.0",
