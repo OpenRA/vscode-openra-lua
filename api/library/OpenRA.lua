@@ -14,8 +14,6 @@ function WorldLoaded() end
 --- This function will hit every game tick which by default is every 40 ms.
 function Tick() end
 
----@alias Color HSLColor
-
 ---A subset of all ActorInit implementations.
 ---@class initTable
 ---@field Location cpos
@@ -66,6 +64,9 @@ function Tick() end
 ---@class cvec
 ---@field X integer
 ---@field Y integer
+
+---@class color
+local color = { };
 
 
 --
