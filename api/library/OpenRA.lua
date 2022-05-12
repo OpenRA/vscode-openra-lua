@@ -2,45 +2,14 @@
 -- https://wiki.openra.net/Utility was used with the --emmy-lua-api parameter.
 -- See https://docs.openra.net/en/latest/release/lua/ for human readable documentation.
 
-
---
--- SECTION Manually added:
---
-
-
 --- This function is triggered once, after the map is loaded.
 function WorldLoaded() end
 
 --- This function will hit every game tick which by default is every 40 ms.
 function Tick() end
 
----A subset of all ActorInit implementations.
----@class initTable
----@field Location cpos
----@field Owner player
----@field Facing wangle
----@field CreationActivityDelay integer
----@field CenterPosition wpos
----@field Faction string
----@field EffectiveOwner player
----@field Stance userdata
----@field FreeActor boolean
----@field ParentActor actor
----@field LineBuildDirection userdata
----@field LineBuildParent string[]
----@field RuntimeCargo actor[]
----@field Cargo string[]
----@field DeployState userdata
----@field Experience integer
----@field Health integer
----@field HuskSpeed integer
----@field Plug string
----@field ProductionSpawnLocation cpos
----@field ScriptTags string[]
----@field TurretFacing wangle
----@field SpawnedByMap string
----@field BodyAnimationFrame integer
 
+--- Base engine types.
 ---@class cpos
 ---@field X integer
 ---@field Y integer
@@ -69,9 +38,60 @@ function Tick() end
 local color = { };
 
 
---
--- SECTION Script API global methods:
---
+---A list of ActorInit implementations that can be used by Lua scripts.
+---@class initTable
+---@field Location cpos
+---@field Owner player | string
+---@field Facing wangle
+---@field CreationActivityDelay integer
+---@field SubCell SubCell
+---@field CenterPosition wpos
+---@field Faction string
+---@field EffectiveOwner player
+---@field Stance UnitStance
+---@field FreeActor boolean
+---@field ParentActor actor
+---@field LineBuildDirection LineBuildDirection
+---@field LineBuildParent actor[]
+---@field Cargo string[]
+---@field DeployState DeployState
+---@field Experience integer
+---@field Health integer
+---@field HuskSpeed integer
+---@field Plug string
+---@field ProductionSpawnLocation cpos
+---@field ScriptTags string[]
+---@field TurretFacing wangle
+---@field BodyAnimationFrame integer
+
+
+SubCell = {
+    FullCell = 0,
+    First = 1,
+    Any = 254,
+    Invalid = 255,
+}
+
+UnitStance = {
+    HoldFire = 0,
+    ReturnFire = 1,
+    Defend = 2,
+    AttackAnything = 3,
+}
+
+LineBuildDirection = {
+    Unset = 0,
+    X = 1,
+    Y = 2,
+}
+
+DeployState = {
+    Undeployed = 0,
+    Deploying = 1,
+    Deployed = 2,
+    Undeploying = 3,
+}
+
 
 
 ---Global variable provided by the game scripting engine.
@@ -905,11 +925,6 @@ WVec = {
     ---@type wvec
     Zero = { };
 }
-
-
---
--- SECTION Script API object properties:
---
 
 
 ---@class actor
