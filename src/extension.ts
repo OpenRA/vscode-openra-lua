@@ -27,8 +27,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.workspace.onDidCloseTextDocument(document => {
 
-		if (document.languageId == 'lua')
-			fs.rmSync(path.resolve(mapPath, path.basename(document.fileName)));
+		if (document.languageId != 'lua')
+			return;
+
+		const generatedMapLuaFilePath = path.resolve(mapPath, path.basename(document.fileName));
+		if (generatedMapLuaFilePath != document.fileName)
+			fs.rmSync(generatedMapLuaFilePath);
 	});
 
 	const newScript = vscode.languages.registerCompletionItemProvider('lua', {
