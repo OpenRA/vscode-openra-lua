@@ -11,13 +11,32 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 
 	const apiPath = path.resolve(context.extensionPath, "api");
 	const config = vscode.workspace.getConfiguration("Lua");
 	const mapPath = path.resolve(context.storagePath as string, "map");
 	fs.mkdirSync(mapPath, { recursive: true } );
 	config.update('workspace.library', [ apiPath, mapPath ], false );
+
+	// Set the default diagnostic setting for the base Lua extension.
+	// Otherwise we get tons of "Undefined global" warnings for actors defined in map.yaml files.
+	// Only set it if no value is set to it at any level to avoid overriding user settings, and set only for the current workspace.
+	const baseLuaExtensionConfiguration = vscode.workspace.getConfiguration("Lua");
+	const value = baseLuaExtensionConfiguration.inspect("diagnostics.groupFileStatus");
+	if ((value?.defaultValue === undefined || value.defaultValue === null || Object.keys(value.defaultValue).length === 0)
+		&& (value?.globalValue === undefined || value.globalValue === null || Object.keys(value.globalValue).length === 0)
+		&& (value?.workspaceValue === undefined || value.workspaceValue === null || Object.keys(value.workspaceValue).length === 0)
+		&& (value?.workspaceFolderValue === undefined || value.workspaceFolderValue === null || Object.keys(value.workspaceFolderValue).length === 0)) {
+
+			// Only set if the current workspace is an OpenRA-related one.
+			// Using ORAIDE's language server's checks for "is this an OpenRA folder / OpenRA ModSDK folder / etc." might be a bit much,
+			// so using a simpler version of the check, inspired by the ORAIDE VSCode extension.
+			const luaFiles = await vscode.workspace.findFiles('**/mod.yaml');
+			if (luaFiles.some(f => fs.readFileSync(f.fsPath, 'utf8').includes('\t'))) {
+				await baseLuaExtensionConfiguration.update("diagnostics.groupFileStatus", { global: "Opened" }, false);
+			}
+	}
 
 	for (const document of vscode.workspace.textDocuments) {
 		addMapGlobals(document, mapPath);
