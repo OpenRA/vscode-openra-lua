@@ -91,13 +91,8 @@ export async function addMapGlobals(document: vscode.TextDocument, mapPath: stri
 
 	const file = path.resolve(mapPath, path.basename(document.fileName));
 
-	try {
-		if (fs.readFileSync(file).length == mapLua.length)
-			return;
-	}
-	catch {
-		// file does not exist
-	}
+	if (fs.existsSync(file) && fs.readFileSync(file).length == mapLua.length)
+		return;
 
 	try {
 		fs.writeFileSync(file, mapLua);
