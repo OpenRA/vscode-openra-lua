@@ -24,10 +24,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Only set it if no value is set to it at any level to avoid overriding user settings, and set only for the current workspace.
 	const baseLuaExtensionConfiguration = vscode.workspace.getConfiguration("Lua");
 	const value = baseLuaExtensionConfiguration.inspect("diagnostics.groupFileStatus");
-	if ((value?.defaultValue === undefined || value.defaultValue === null || Object.keys(value.defaultValue).length === 0)
-		&& (value?.globalValue === undefined || value.globalValue === null || Object.keys(value.globalValue).length === 0)
-		&& (value?.workspaceValue === undefined || value.workspaceValue === null || Object.keys(value.workspaceValue).length === 0)
-		&& (value?.workspaceFolderValue === undefined || value.workspaceFolderValue === null || Object.keys(value.workspaceFolderValue).length === 0)) {
+	if ((value?.defaultValue === undefined || value.defaultValue === null || Object.keys(value.defaultValue as Object).length === 0)
+		&& (value?.globalValue === undefined || value.globalValue === null || Object.keys(value.globalValue as Object).length === 0)
+		&& (value?.workspaceValue === undefined || value.workspaceValue === null || Object.keys(value.workspaceValue as Object).length === 0)
+		&& (value?.workspaceFolderValue === undefined || value.workspaceFolderValue === null || Object.keys(value.workspaceFolderValue as Object).length === 0)) {
 
 			// Only set if the current workspace is an OpenRA-related one.
 			// Using ORAIDE's language server's checks for "is this an OpenRA folder / OpenRA ModSDK folder / etc." might be a bit much,
