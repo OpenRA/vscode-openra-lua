@@ -2,6 +2,11 @@
 -- https://wiki.openra.net/Utility was used with the --emmy-lua-api parameter.
 -- See https://docs.openra.net/en/latest/release/lua/ for human readable documentation.
 
+--- This file only lists function "signatures", causing Lua Diagnostics errors: "Annotations specify that a return value is required here."
+--- Disable that specific error for the entire file.
+---@diagnostic disable: missing-return
+
+
 --- This function is triggered once, after the map is loaded.
 function WorldLoaded() end
 
@@ -13,11 +18,15 @@ function Tick() end
 ---@class cpos
 ---@field X integer
 ---@field Y integer
+---@operator add(cvec): cpos
+---@operator sub(cvec): cpos
 
 ---@class wpos
 ---@field X integer
 ---@field Y integer
 ---@field Z integer
+---@operator add(wvec): wpos
+---@operator sub(wvec): wpos
 
 ---@class wangle
 ---@field Angle integer
@@ -65,6 +74,7 @@ local color = { };
 ---@field BodyAnimationFrame integer
 
 
+---@enum SubCell
 SubCell = {
     FullCell = 0,
     First = 1,
@@ -72,6 +82,7 @@ SubCell = {
     Invalid = 255,
 }
 
+---@enum UnitStance
 UnitStance = {
     HoldFire = 0,
     ReturnFire = 1,
@@ -79,12 +90,14 @@ UnitStance = {
     AttackAnything = 3,
 }
 
+---@enum LineBuildDirection
 LineBuildDirection = {
     Unset = 0,
     X = 1,
     Y = 2,
 }
 
+---@enum DeployState
 DeployState = {
     Undeployed = 0,
     Deploying = 1,
@@ -125,7 +138,7 @@ Actor = {
 Angle = {
 
     ---@type wangle
-    East = { };
+    East = nil;
 
     --- Create an arbitrary angle.
     ---@param a integer
@@ -133,25 +146,25 @@ Angle = {
     New = function(a) end;
 
     ---@type wangle
-    North = { };
+    North = nil;
 
     ---@type wangle
-    NorthEast = { };
+    NorthEast = nil;
 
     ---@type wangle
-    NorthWest = { };
+    NorthWest = nil;
 
     ---@type wangle
-    South = { };
+    South = nil;
 
     ---@type wangle
-    SouthEast = { };
+    SouthEast = nil;
 
     ---@type wangle
-    SouthWest = { };
+    SouthWest = nil;
 
     ---@type wangle
-    West = { };
+    West = nil;
 }
 
 ---Global variable provided by the game scripting engine.
@@ -170,44 +183,44 @@ Camera = {
 
     --- The center of the visible viewport.
     ---@type wpos
-    Position = { };
+    Position = nil;
 }
 
 ---Global variable provided by the game scripting engine.
 HSLColor = {
 
     ---@type color
-    Aqua = { };
+    Aqua = nil;
 
     ---@type color
-    Black = { };
+    Black = nil;
 
     ---@type color
-    Blue = { };
+    Blue = nil;
 
     ---@type color
-    Brown = { };
+    Brown = nil;
 
     ---@type color
-    Cyan = { };
+    Cyan = nil;
 
     ---@type color
-    DarkBlue = { };
+    DarkBlue = nil;
 
     ---@type color
-    DarkCyan = { };
+    DarkCyan = nil;
 
     ---@type color
-    DarkGray = { };
+    DarkGray = nil;
 
     ---@type color
-    DarkGreen = { };
+    DarkGreen = nil;
 
     ---@type color
-    DarkOrange = { };
+    DarkOrange = nil;
 
     ---@type color
-    DarkRed = { };
+    DarkRed = nil;
 
     --- Create a new color with the specified red/green/blue/[alpha] hex string (rrggbb[aa]).
     ---@param value string
@@ -223,49 +236,49 @@ HSLColor = {
     FromRGB = function(red, green, blue, alpha) end;
 
     ---@type color
-    Fuchsia = { };
+    Fuchsia = nil;
 
     ---@type color
-    Gold = { };
+    Gold = nil;
 
     ---@type color
-    Gray = { };
+    Gray = nil;
 
     ---@type color
-    Green = { };
+    Green = nil;
 
     ---@type color
-    LawnGreen = { };
+    LawnGreen = nil;
 
     ---@type color
-    LightBlue = { };
+    LightBlue = nil;
 
     ---@type color
-    LightCyan = { };
+    LightCyan = nil;
 
     ---@type color
-    LightGray = { };
+    LightGray = nil;
 
     ---@type color
-    LightGreen = { };
+    LightGreen = nil;
 
     ---@type color
-    LightYellow = { };
+    LightYellow = nil;
 
     ---@type color
-    Lime = { };
+    Lime = nil;
 
     ---@type color
-    LimeGreen = { };
+    LimeGreen = nil;
 
     ---@type color
-    Magenta = { };
+    Magenta = nil;
 
     ---@type color
-    Maroon = { };
+    Maroon = nil;
 
     ---@type color
-    Navy = { };
+    Navy = nil;
 
     --- Create a new color with the specified hue/saturation/luminosity.
     ---@param hue integer
@@ -275,34 +288,34 @@ HSLColor = {
     New = function(hue, saturation, luminosity) end;
 
     ---@type color
-    Olive = { };
+    Olive = nil;
 
     ---@type color
-    Orange = { };
+    Orange = nil;
 
     ---@type color
-    OrangeRed = { };
+    OrangeRed = nil;
 
     ---@type color
-    Purple = { };
+    Purple = nil;
 
     ---@type color
-    Red = { };
+    Red = nil;
 
     ---@type color
-    Salmon = { };
+    Salmon = nil;
 
     ---@type color
-    SkyBlue = { };
+    SkyBlue = nil;
 
     ---@type color
-    Teal = { };
+    Teal = nil;
 
     ---@type color
-    White = { };
+    White = nil;
 
     ---@type color
-    Yellow = { };
+    Yellow = nil;
 }
 
 ---Global variable provided by the game scripting engine.
@@ -316,7 +329,7 @@ CPos = {
 
     --- The cell coordinate origin.
     ---@type cpos
-    Zero = { };
+    Zero = nil;
 }
 
 ---Global variable provided by the game scripting engine.
@@ -330,7 +343,7 @@ CVec = {
 
     --- The cell zero-vector.
     ---@type cvec
-    Zero = { };
+    Zero = nil;
 }
 
 ---Global variable provided by the game scripting engine.
@@ -338,11 +351,11 @@ DateTime = {
 
     --- Get the current game time (in ticks).
     ---@type integer
-    GameTime = { };
+    GameTime = nil;
 
     --- True on the 31st of October.
     ---@type boolean
-    IsHalloween = { };
+    IsHalloween = nil;
 
     --- Converts the number of minutes into game time (ticks).
     ---@param minutes integer
@@ -356,59 +369,21 @@ DateTime = {
 
     --- Return or set the time limit (in ticks). When setting, the time limit will count from now. Setting the time limit to 0 will disable it.
     ---@type integer
-    TimeLimit = { };
+    TimeLimit = nil;
 
     --- The notification string used for custom time limit warnings. See the TimeLimitManager trait documentation for details.
     ---@type string
-    TimeLimitNotification = { };
-}
-
----Global variable provided by the game scripting engine.
----@deprecated
---- The Facing table is deprecated. Use Angle instead.
-Facing = {
-
-    ---@deprecated Use Angle.East instead.
-    ---@type integer
-    East = { };
-
-    ---@deprecated Use Angle.North instead.
-    ---@type integer
-    North = { };
-
-    ---@deprecated Use Angle.NorthEast instead.
-    ---@type integer
-    NorthEast = { };
-
-    ---@deprecated Use Angle.NorthWest instead.
-    ---@type integer
-    NorthWest = { };
-
-    ---@deprecated Use Angle.South instead.
-    ---@type integer
-    South = { };
-
-    ---@deprecated Use Angle.SouthEast instead.
-    ---@type integer
-    SouthEast = { };
-
-    ---@deprecated Use Angle.SouthWest instead.
-    ---@type integer
-    SouthWest = { };
-
-    ---@deprecated Use Angle.West instead.
-    ---@type integer
-    West = { };
+    TimeLimitNotification = nil;
 }
 
 ---Global variable provided by the game scripting engine.
 Lighting = {
 
     ---@type number
-    Ambient = { };
+    Ambient = nil;
 
     ---@type number
-    Blue = { };
+    Blue = nil;
 
     --- Controls the `FlashPaletteEffect` trait.
     ---@param type? string
@@ -416,10 +391,10 @@ Lighting = {
     Flash = function(type, ticks) end;
 
     ---@type number
-    Green = { };
+    Green = nil;
 
     ---@type number
-    Red = { };
+    Red = nil;
 }
 
 ---Global variable provided by the game scripting engine.
@@ -441,7 +416,7 @@ Map = {
 
     --- Returns a table of all the actors that are currently on the map/in the world.
     ---@type actor[]
-    ActorsInWorld = { };
+    ActorsInWorld = nil;
 
     --- Returns a table of all actors tagged with the given string.
     ---@param tag string
@@ -450,7 +425,7 @@ Map = {
 
     --- Returns the location of the bottom-right corner of the map (assuming zero terrain height).
     ---@type wpos
-    BottomRight = { };
+    BottomRight = nil;
 
     --- Returns the center of a cell in world coordinates.
     ---@param cell cpos
@@ -476,11 +451,11 @@ Map = {
 
     --- Returns true if this is a shellmap and the player has paused animations.
     ---@type boolean
-    IsPausedShellmap = { };
+    IsPausedShellmap = nil;
 
     --- Returns true if there is only one human player.
     ---@type boolean
-    IsSinglePlayer = { };
+    IsSinglePlayer = nil;
 
     --- Returns the value of a `ScriptLobbyDropdown` selected in the game lobby.
     ---@param id string
@@ -494,7 +469,7 @@ Map = {
 
     --- Returns a table of all the actors that were specified in the map file.
     ---@type actor[]
-    NamedActors = { };
+    NamedActors = nil;
 
     --- Returns a random cell inside the visible region of the map.
     ---@return cpos
@@ -511,7 +486,7 @@ Map = {
 
     --- Returns the location of the top-left corner of the map (assuming zero terrain height).
     ---@type wpos
-    TopLeft = { };
+    TopLeft = nil;
 }
 
 ---Global variable provided by the game scripting engine.
@@ -539,21 +514,20 @@ Media = {
     ---@param color? color?
     FloatingText = function(text, position, duration, color) end;
 
-    --- Play a VQA video fullscreen. File name has to include the file extension.
-    ---@param movie string
-    ---@param func? function
-    PlayMovieFullscreen = function(movie, func) end;
+    --- Play a video fullscreen. File name has to include the file extension.
+    ---@param videoFileName string
+    ---@param onPlayComplete? function
+    PlayMovieFullscreen = function(videoFileName, onPlayComplete) end;
 
-    --- Play a VQA video in the radar window. File name has to include the file extension. Returns true on success, if the movie wasn't found the function returns false and the callback is executed.
-    ---@param movie string
-    ---@param playComplete? function
-    ---@return boolean
-    PlayMovieInRadar = function(movie, playComplete) end;
+    --- Play a video in the radar window. File name has to include the file extension.
+    ---@param videoFileName string
+    ---@param onPlayComplete? function
+    PlayMovieInRadar = function(videoFileName, onPlayComplete) end;
 
     --- Play track defined in music.yaml or map.yaml, or keep track empty for playing a random song.
     ---@param track? string
-    ---@param func? function
-    PlayMusic = function(track, func) end;
+    ---@param onPlayComplete? function
+    PlayMusic = function(track, onPlayComplete) end;
 
     --- Play a sound file
     ---@param file string
@@ -908,7 +882,7 @@ WPos = {
 
     --- The world coordinate origin.
     ---@type wpos
-    Zero = { };
+    Zero = nil;
 }
 
 ---Global variable provided by the game scripting engine.
@@ -923,7 +897,7 @@ WVec = {
 
     --- The world zero-vector.
     ---@type wvec
-    Zero = { };
+    Zero = nil;
 }
 
 
@@ -932,105 +906,97 @@ local __actor = {
 
     --- Fly within the cell grid.
     --- *Queued Activity*
-    --- **Requires Trait:** [Aircraft](https://docs.openra.net/en/latest/release/traits/#aircraft)
+    --- **Requires Trait:** [Aircraft](https://docs.openra.net/en/release/traits/#aircraft)
     ---@param cell cpos
+    ---@diagnostic disable-next-line: duplicate-index
     Move = function(cell) end;
 
     --- Return to the base, which is either the destination given, or an auto-selected one otherwise.
     --- *Queued Activity*
-    --- **Requires Trait:** [Aircraft](https://docs.openra.net/en/latest/release/traits/#aircraft)
+    --- **Requires Trait:** [Aircraft](https://docs.openra.net/en/release/traits/#aircraft)
     ---@param destination? actor
     ReturnToBase = function(destination) end;
 
     --- Queues a landing activity on the specified actor.
     --- *Queued Activity*
-    --- **Requires Trait:** [Aircraft](https://docs.openra.net/en/latest/release/traits/#aircraft)
+    --- **Requires Trait:** [Aircraft](https://docs.openra.net/en/release/traits/#aircraft)
     ---@param landOn actor
     Land = function(landOn) end;
 
     --- Starts the resupplying activity when being on a host building.
     --- *Queued Activity*
-    --- **Requires Trait:** [Aircraft](https://docs.openra.net/en/latest/release/traits/#aircraft)
+    --- **Requires Trait:** [Aircraft](https://docs.openra.net/en/release/traits/#aircraft)
     Resupply = function() end;
 
     --- Activate the actor's Airstrike Power. Returns the aircraft that will attack.
-    --- **Requires Trait:** [AirstrikePower](https://docs.openra.net/en/latest/release/traits/#airstrikepower)
+    --- **Requires Trait:** [AirstrikePower](https://docs.openra.net/en/release/traits/#airstrikepower)
     ---@param target wpos
     ---@param facing? wangle?
     ---@return actor[]
     TargetAirstrike = function(target, facing) end;
 
-    --- Activate the actor's Airstrike Power. DEPRECATED! Will be removed.
-    --- **Requires Trait:** [AirstrikePower](https://docs.openra.net/en/latest/release/traits/#airstrikepower)
-    ---@deprecated SendAirstrike is deprecated. Use TargetAirstrike instead.
-    ---@param target wpos
-    ---@param randomize? boolean
-    ---@param facing? integer
-    SendAirstrike = function(target, randomize, facing) end;
-
-    --- Activate the actor's Airstrike Power. DEPRECATED! Will be removed.
-    --- **Requires Trait:** [AirstrikePower](https://docs.openra.net/en/latest/release/traits/#airstrikepower)
-    ---@deprecated SendAirstrikeFrom is deprecated. Use TargetAirstrike instead.
-    ---@param from cpos
-    ---@param to cpos
-    SendAirstrikeFrom = function(from, to) end;
-
     --- Returns the count of the actor's specified ammopool.
-    --- **Requires Trait:** [AmmoPool](https://docs.openra.net/en/latest/release/traits/#ammopool)
+    --- **Requires Trait:** [AmmoPool](https://docs.openra.net/en/release/traits/#ammopool)
     ---@param poolName? string
     ---@return integer
     AmmoCount = function(poolName) end;
 
     --- Returns the maximum count of ammo the actor can load.
-    --- **Requires Trait:** [AmmoPool](https://docs.openra.net/en/latest/release/traits/#ammopool)
+    --- **Requires Trait:** [AmmoPool](https://docs.openra.net/en/release/traits/#ammopool)
     ---@param poolName? string
     ---@return integer
     MaximumAmmoCount = function(poolName) end;
 
     --- Adds the specified amount of ammo to the specified ammopool.
     --- (Use a negative amount to remove ammo.)
-    --- **Requires Trait:** [AmmoPool](https://docs.openra.net/en/latest/release/traits/#ammopool)
+    --- **Requires Trait:** [AmmoPool](https://docs.openra.net/en/release/traits/#ammopool)
     ---@param poolName? string
     ---@param amount? integer
     Reload = function(poolName, amount) end;
 
     --- Captures the target actor.
-    --- **Requires Trait:** [CaptureManager](https://docs.openra.net/en/latest/release/traits/#capturemanager)
+    --- **Requires Trait:** [CaptureManager](https://docs.openra.net/en/release/traits/#capturemanager)
     ---@param target actor
     Capture = function(target) end;
 
+    --- Checks if the target actor can be catured.
+    --- **Requires Trait:** [CaptureManager](https://docs.openra.net/en/release/traits/#capturemanager)
+    ---@param target actor
+    ---@return boolean
+    CanCapture = function(target) end;
+
     --- Pick up the target actor.
     --- *Queued Activity*
-    --- **Requires Trait:** [Carryall](https://docs.openra.net/en/latest/release/traits/#carryall)
+    --- **Requires Trait:** [Carryall](https://docs.openra.net/en/release/traits/#carryall)
     ---@param target actor
     PickupCarryable = function(target) end;
 
     --- Drop the actor being carried at the target location.
     --- *Queued Activity*
-    --- **Requires Trait:** [Carryall](https://docs.openra.net/en/latest/release/traits/#carryall)
+    --- **Requires Trait:** [Carryall](https://docs.openra.net/en/release/traits/#carryall)
     ---@param target cpos
     DeliverCarryable = function(target) end;
 
     --- Returns true if the actor is cloaked.
-    --- **Requires Trait:** [Cloak](https://docs.openra.net/en/latest/release/traits/#cloak)
+    --- **Requires Trait:** [Cloak](https://docs.openra.net/en/release/traits/#cloak)
     ---@type boolean
-    IsCloaked = { };
+    IsCloaked = nil;
 
     --- Seek out and attack nearby targets.
     --- *Queued Activity*
-    --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/latest/release/traits/#attackbase), [IMove](https://docs.openra.net/en/latest/release/traits/#imove)
+    --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/release/traits/#attackbase), [IMove](https://docs.openra.net/en/release/traits/#imove)
     Hunt = function() end;
 
     --- Move to a cell, but stop and attack anything within range on the way. closeEnough defines an optional range (in cells) that will be considered close enough to complete the activity.
     --- *Queued Activity*
-    --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/latest/release/traits/#attackbase), [IMove](https://docs.openra.net/en/latest/release/traits/#imove)
+    --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/release/traits/#attackbase), [IMove](https://docs.openra.net/en/release/traits/#imove)
     ---@param cell cpos
     ---@param closeEnough? integer
     AttackMove = function(cell, closeEnough) end;
 
     --- Patrol along a set of given waypoints. The action is repeated by default, and the actor will wait for `wait` ticks at each waypoint.
     --- *Queued Activity*
-    --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/latest/release/traits/#attackbase), [IMove](https://docs.openra.net/en/latest/release/traits/#imove)
+    --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/release/traits/#attackbase), [IMove](https://docs.openra.net/en/release/traits/#imove)
     ---@param waypoints cpos[]
     ---@param loop? boolean
     ---@param wait? integer
@@ -1038,21 +1004,21 @@ local __actor = {
 
     --- Patrol along a set of given waypoints until a condition becomes true. The actor will wait for `wait` ticks at each waypoint.
     --- *Queued Activity*
-    --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/latest/release/traits/#attackbase), [IMove](https://docs.openra.net/en/latest/release/traits/#imove)
+    --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/release/traits/#attackbase), [IMove](https://docs.openra.net/en/release/traits/#imove)
     ---@param waypoints cpos[]
     ---@param func function
     ---@param wait? integer
     PatrolUntil = function(waypoints, func, wait) end;
 
     --- Attack the target actor. The target actor needs to be visible.
-    --- **Requires Trait:** [AttackBase](https://docs.openra.net/en/latest/release/traits/#attackbase)
+    --- **Requires Trait:** [AttackBase](https://docs.openra.net/en/release/traits/#attackbase)
     ---@param targetActor actor
     ---@param allowMove? boolean
     ---@param forceAttack? boolean
     Attack = function(targetActor, allowMove, forceAttack) end;
 
     --- Checks if the targeted actor is a valid target for this actor.
-    --- **Requires Trait:** [AttackBase](https://docs.openra.net/en/latest/release/traits/#attackbase)
+    --- **Requires Trait:** [AttackBase](https://docs.openra.net/en/release/traits/#attackbase)
     ---@param targetActor actor
     ---@return boolean
     CanTarget = function(targetActor) end;
@@ -1060,72 +1026,72 @@ local __actor = {
     --- Grant an external condition on this actor and return the revocation token.
     --- Conditions must be defined on an ExternalConditions trait on the actor.
     --- If duration > 0 the condition will be automatically revoked after the defined number of ticks.
-    --- **Requires Trait:** [ExternalCondition](https://docs.openra.net/en/latest/release/traits/#externalcondition)
+    --- **Requires Trait:** [ExternalCondition](https://docs.openra.net/en/release/traits/#externalcondition)
     ---@param condition string
     ---@param duration? integer
     ---@return integer
     GrantCondition = function(condition, duration) end;
 
     --- Revoke a condition using the token returned by GrantCondition.
-    --- **Requires Trait:** [ExternalCondition](https://docs.openra.net/en/latest/release/traits/#externalcondition)
+    --- **Requires Trait:** [ExternalCondition](https://docs.openra.net/en/release/traits/#externalcondition)
     ---@param token integer
     RevokeCondition = function(token) end;
 
     --- Check whether this actor accepts a specific external condition.
-    --- **Requires Trait:** [ExternalCondition](https://docs.openra.net/en/latest/release/traits/#externalcondition)
+    --- **Requires Trait:** [ExternalCondition](https://docs.openra.net/en/release/traits/#externalcondition)
     ---@param condition string
     ---@return boolean
     AcceptsCondition = function(condition) end;
 
     --- Deliver cash to the target actor.
     --- *Queued Activity*
-    --- **Requires Traits:** [IMove](https://docs.openra.net/en/latest/release/traits/#imove), [DeliversCash](https://docs.openra.net/en/latest/release/traits/#deliverscash)
+    --- **Requires Traits:** [IMove](https://docs.openra.net/en/release/traits/#imove), [DeliversCash](https://docs.openra.net/en/release/traits/#deliverscash)
     ---@param target actor
     DeliverCash = function(target) end;
 
     --- Deliver experience to the target actor.
     --- *Queued Activity*
-    --- **Requires Traits:** [IMove](https://docs.openra.net/en/latest/release/traits/#imove), [DeliversExperience](https://docs.openra.net/en/latest/release/traits/#deliversexperience)
+    --- **Requires Traits:** [IMove](https://docs.openra.net/en/release/traits/#imove), [DeliversExperience](https://docs.openra.net/en/release/traits/#deliversexperience)
     ---@param target actor
     DeliverExperience = function(target) end;
 
     --- Demolish the target actor.
     --- *Queued Activity*
-    --- **Requires Traits:** [IMove](https://docs.openra.net/en/latest/release/traits/#imove), [Demolition](https://docs.openra.net/en/latest/release/traits/#demolition)
+    --- **Requires Traits:** [IMove](https://docs.openra.net/en/release/traits/#imove), [Demolition](https://docs.openra.net/en/release/traits/#demolition)
     ---@param target actor
     Demolish = function(target) end;
 
     --- Gives the actor experience. If 'silent' is true, no animation or sound will be played if the actor levels up.
-    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/latest/release/traits/#gainsexperience)
+    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/release/traits/#gainsexperience)
     ---@param amount integer
     ---@param silent? boolean
     GiveExperience = function(amount, silent) end;
 
     --- Gives the actor level(s). If 'silent' is true, no animation or sound will be played.
-    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/latest/release/traits/#gainsexperience)
+    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/release/traits/#gainsexperience)
     ---@param numLevels integer
     ---@param silent? boolean
     GiveLevels = function(numLevels, silent) end;
 
     --- The actor's amount of experience.
-    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/latest/release/traits/#gainsexperience)
+    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/release/traits/#gainsexperience)
     ---@type integer
-    Experience = { };
+    Experience = nil;
 
     --- The actor's level.
-    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/latest/release/traits/#gainsexperience)
+    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/release/traits/#gainsexperience)
     ---@type integer
-    Level = { };
+    Level = nil;
 
     --- The actor's maximum possible level.
-    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/latest/release/traits/#gainsexperience)
+    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/release/traits/#gainsexperience)
     ---@type integer
-    MaxLevel = { };
+    MaxLevel = nil;
 
     --- Returns true if the actor can gain a level.
-    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/latest/release/traits/#gainsexperience)
+    --- **Requires Trait:** [GainsExperience](https://docs.openra.net/en/release/traits/#gainsexperience)
     ---@type boolean
-    CanGainLevel = { };
+    CanGainLevel = nil;
 
     --- Test whether an actor has a specific property.
     ---@param name string
@@ -1141,27 +1107,27 @@ local __actor = {
 
     --- Specifies whether the actor is in the world.
     ---@type boolean
-    IsInWorld = { };
+    IsInWorld = nil;
 
     --- Specifies whether the actor is alive or dead.
     ---@type boolean
-    IsDead = { };
+    IsDead = nil;
 
     --- Specifies whether the actor is idle (not performing any activities).
     ---@type boolean
-    IsIdle = { };
+    IsIdle = nil;
 
     --- The player that owns the actor.
     ---@type player
-    Owner = { };
+    Owner = nil;
 
     --- The type of the actor (e.g. "e1").
     ---@type string
-    Type = { };
+    Type = nil;
 
     --- The effective owner of the actor.
     ---@type player
-    EffectiveOwner = { };
+    EffectiveOwner = nil;
 
     --- Instantly moves the actor to the specified cell.
     --- *Queued Activity*
@@ -1202,235 +1168,228 @@ local __actor = {
 
     --- The actor position in cell coordinates.
     ---@type cpos
-    Location = { };
+    Location = nil;
 
     --- The actor position in world coordinates.
     ---@type wpos
-    CenterPosition = { };
+    CenterPosition = nil;
 
     --- The direction that the actor is facing.
     ---@type wangle
-    Facing = { };
+    Facing = nil;
 
     --- Current actor stance. Returns nil if this actor doesn't support stances.
     ---@type string
-    Stance = { };
+    Stance = nil;
 
     --- The actor's tooltip name. Returns nil if the actor has no tooltip.
     ---@type string
-    TooltipName = { };
+    TooltipName = nil;
 
     --- Specifies whether or not the actor supports 'tags'.
     ---@type boolean
-    IsTaggable = { };
+    IsTaggable = nil;
 
     --- Guard the target actor.
     --- *Queued Activity*
-    --- **Requires Traits:** [Guard](https://docs.openra.net/en/latest/release/traits/#guard), [IMove](https://docs.openra.net/en/latest/release/traits/#imove)
+    --- **Requires Traits:** [Guard](https://docs.openra.net/en/release/traits/#guard), [IMove](https://docs.openra.net/en/release/traits/#imove)
     ---@param targetActor actor
     Guard = function(targetActor) end;
 
     --- Search for nearby resources and begin harvesting.
     --- *Queued Activity*
-    --- **Requires Trait:** [Harvester](https://docs.openra.net/en/latest/release/traits/#harvester)
+    --- **Requires Trait:** [Harvester](https://docs.openra.net/en/release/traits/#harvester)
     FindResources = function() end;
 
     --- Kill the actor. damageTypes may be omitted, specified as a string, or as table of strings.
-    --- **Requires Trait:** [IHealth](https://docs.openra.net/en/latest/release/traits/#ihealth)
+    --- **Requires Trait:** [IHealth](https://docs.openra.net/en/release/traits/#ihealth)
     ---@param damageTypes? any
     Kill = function(damageTypes) end;
 
     --- Current health of the actor.
-    --- **Requires Trait:** [IHealth](https://docs.openra.net/en/latest/release/traits/#ihealth)
+    --- **Requires Trait:** [IHealth](https://docs.openra.net/en/release/traits/#ihealth)
     ---@type integer
-    Health = { };
+    Health = nil;
 
     --- Maximum health of the actor.
-    --- **Requires Trait:** [IHealth](https://docs.openra.net/en/latest/release/traits/#ihealth)
+    --- **Requires Trait:** [IHealth](https://docs.openra.net/en/release/traits/#ihealth)
     ---@type integer
-    MaxHealth = { };
+    MaxHealth = nil;
 
     --- Moves within the cell grid. closeEnough defines an optional range (in cells) that will be considered close enough to complete the activity.
     --- *Queued Activity*
-    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/latest/release/traits/#mobile)
+    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/release/traits/#mobile)
     ---@param cell cpos
     ---@param closeEnough? integer
+    ---@diagnostic disable-next-line: duplicate-index
     Move = function(cell, closeEnough) end;
 
     --- Moves within the cell grid, ignoring lane biases.
     --- *Queued Activity*
-    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/latest/release/traits/#mobile)
+    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/release/traits/#mobile)
     ---@param cell cpos
     ScriptedMove = function(cell) end;
 
     --- Moves from outside the world into the cell grid.
     --- *Queued Activity*
-    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/latest/release/traits/#mobile)
+    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/release/traits/#mobile)
     ---@param cell cpos
     MoveIntoWorld = function(cell) end;
 
     --- Leave the current position in a random direction.
     --- *Queued Activity*
-    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/latest/release/traits/#mobile)
+    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/release/traits/#mobile)
     Scatter = function() end;
 
     --- Move to and enter the transport.
     --- *Queued Activity*
-    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/latest/release/traits/#mobile)
+    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/release/traits/#mobile)
     ---@param transport actor
     EnterTransport = function(transport) end;
 
     --- Whether the actor can move (false if immobilized).
-    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/latest/release/traits/#mobile)
+    --- **Requires Trait:** [Mobile](https://docs.openra.net/en/release/traits/#mobile)
     ---@type boolean
-    IsMobile = { };
+    IsMobile = nil;
 
     --- Activate the actor's NukePower.
-    --- **Requires Trait:** [NukePower](https://docs.openra.net/en/latest/release/traits/#nukepower)
+    --- **Requires Trait:** [NukePower](https://docs.openra.net/en/release/traits/#nukepower)
     ---@param target cpos
     ActivateNukePower = function(target) end;
 
     --- Command transport to paradrop passengers near the target cell.
     --- *Queued Activity*
-    --- **Requires Traits:** [Cargo](https://docs.openra.net/en/latest/release/traits/#cargo), [ParaDrop](https://docs.openra.net/en/latest/release/traits/#paradrop)
+    --- **Requires Traits:** [Cargo](https://docs.openra.net/en/release/traits/#cargo), [ParaDrop](https://docs.openra.net/en/release/traits/#paradrop)
     ---@param cell cpos
     Paradrop = function(cell) end;
 
     --- Activate the actor's Paratroopers Power. Returns the aircraft that will drop the reinforcements.
-    --- **Requires Trait:** [ParatroopersPower](https://docs.openra.net/en/latest/release/traits/#paratrooperspower)
+    --- **Requires Trait:** [ParatroopersPower](https://docs.openra.net/en/release/traits/#paratrooperspower)
     ---@param target wpos
     ---@param facing? wangle?
     ---@return actor[]
     TargetParatroopers = function(target, facing) end;
 
-    --- Activate the actor's Paratroopers Power. Returns the aircraft that will drop the reinforcements. DEPRECATED! Will be removed.
-    --- **Requires Trait:** [ParatroopersPower](https://docs.openra.net/en/latest/release/traits/#paratrooperspower)
-    ---@deprecated ActivateParatroopers is deprecated. Use TargetParatroopers instead.
-    ---@param target wpos
-    ---@param facing? integer
-    ---@return actor[]
-    ActivateParatroopers = function(target, facing) end;
-
     --- Returns the power drained/provided by this actor.
-    --- **Requires Trait:** [Power](https://docs.openra.net/en/latest/release/traits/#power)
+    --- **Requires Trait:** [Power](https://docs.openra.net/en/release/traits/#power)
     ---@type integer
-    Power = { };
+    Power = nil;
 
     --- Build a unit, ignoring the production queue. The activity will wait if the exit is blocked.
     --- If productionType is nil or unavailable, then an exit will be selected based on 'Buildable.BuildAtProductionType'.
     --- If 'Buildable.BuildAtProductionType' is not set either, a random exit will be selected.
     --- *Queued Activity*
-    --- **Requires Trait:** [Production](https://docs.openra.net/en/latest/release/traits/#production)
+    --- **Requires Trait:** [Production](https://docs.openra.net/en/release/traits/#production)
     ---@param actorType string
     ---@param factionVariant? string
     ---@param productionType? string
     Produce = function(actorType, factionVariant, productionType) end;
 
     --- Query or set a factory's rally point.
-    --- **Requires Trait:** [RallyPoint](https://docs.openra.net/en/latest/release/traits/#rallypoint)
+    --- **Requires Trait:** [RallyPoint](https://docs.openra.net/en/release/traits/#rallypoint)
     ---@type cpos
-    RallyPoint = { };
+    RallyPoint = nil;
 
     --- Query or set the factory's primary building status.
-    --- **Requires Trait:** [PrimaryBuilding](https://docs.openra.net/en/latest/release/traits/#primarybuilding)
+    --- **Requires Trait:** [PrimaryBuilding](https://docs.openra.net/en/release/traits/#primarybuilding)
     ---@type boolean
-    IsPrimaryBuilding = { };
+    IsPrimaryBuilding = nil;
 
     --- Build the specified set of actors using a TD-style (per building) production queue. The function will return true if production could be started, false otherwise. If an actionFunc is given, it will be called as actionFunc(Actor[] actors) once production of all actors has been completed.  The actors array is guaranteed to only contain alive actors.
-    --- **Requires Traits:** [ProductionQueue](https://docs.openra.net/en/latest/release/traits/#productionqueue), [ScriptTriggers](https://docs.openra.net/en/latest/release/traits/#scripttriggers)
+    --- **Requires Traits:** [ProductionQueue](https://docs.openra.net/en/release/traits/#productionqueue), [ScriptTriggers](https://docs.openra.net/en/release/traits/#scripttriggers)
     ---@param actorTypes string[]
     ---@param actionFunc? function
     ---@return boolean
     Build = function(actorTypes, actionFunc) end;
 
     --- Check whether the factory's production queue that builds this type of actor is currently busy. Note: it does not check whether this particular type of actor is being produced.
-    --- **Requires Traits:** [ProductionQueue](https://docs.openra.net/en/latest/release/traits/#productionqueue), [ScriptTriggers](https://docs.openra.net/en/latest/release/traits/#scripttriggers)
+    --- **Requires Traits:** [ProductionQueue](https://docs.openra.net/en/release/traits/#productionqueue), [ScriptTriggers](https://docs.openra.net/en/release/traits/#scripttriggers)
     ---@param actorType string
     ---@return boolean
     IsProducing = function(actorType) end;
 
     --- Start repairs on this building. `repairer` can be an allied player.
-    --- **Requires Trait:** [RepairableBuilding](https://docs.openra.net/en/latest/release/traits/#repairablebuilding)
+    --- **Requires Trait:** [RepairableBuilding](https://docs.openra.net/en/release/traits/#repairablebuilding)
     ---@param repairer? player
     StartBuildingRepairs = function(repairer) end;
 
     --- Stop repairs on this building. `repairer` can be an allied player.
-    --- **Requires Trait:** [RepairableBuilding](https://docs.openra.net/en/latest/release/traits/#repairablebuilding)
+    --- **Requires Trait:** [RepairableBuilding](https://docs.openra.net/en/release/traits/#repairablebuilding)
     ---@param repairer? player
     StopBuildingRepairs = function(repairer) end;
 
     --- Makes the unit automatically run around and become faster.
     --- *Queued Activity*
-    --- **Requires Trait:** [ScaredyCat](https://docs.openra.net/en/latest/release/traits/#scaredycat)
+    --- **Requires Trait:** [ScaredyCat](https://docs.openra.net/en/release/traits/#scaredycat)
     Panic = function() end;
 
     --- Start selling the actor.
-    --- **Requires Trait:** [Sellable](https://docs.openra.net/en/latest/release/traits/#sellable)
+    --- **Requires Trait:** [Sellable](https://docs.openra.net/en/release/traits/#sellable)
     Sell = function() end;
 
     --- Queue a new transformation.
     --- *Queued Activity*
-    --- **Requires Trait:** [Transforms](https://docs.openra.net/en/latest/release/traits/#transforms)
+    --- **Requires Trait:** [Transforms](https://docs.openra.net/en/release/traits/#transforms)
     Deploy = function() end;
 
     --- Teleport an existing actor inside this transport.
-    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/latest/release/traits/#cargo)
+    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/release/traits/#cargo)
     ---@param a actor
     LoadPassenger = function(a) end;
 
     --- Remove an existing actor (or first actor if none specified) from the transport.  This actor is not added to the world.
-    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/latest/release/traits/#cargo)
+    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/release/traits/#cargo)
     ---@param a? actor
     ---@return actor
     UnloadPassenger = function(a) end;
 
     --- Command transport to unload passengers.
     --- *Queued Activity*
-    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/latest/release/traits/#cargo)
+    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/release/traits/#cargo)
     ---@param cell? cpos?
     ---@param unloadRange? integer
     UnloadPassengers = function(cell, unloadRange) end;
 
     --- Returns references to passengers inside the transport.
-    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/latest/release/traits/#cargo)
+    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/release/traits/#cargo)
     ---@type actor[]
-    Passengers = { };
+    Passengers = nil;
 
     --- Specifies whether transport has any passengers.
-    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/latest/release/traits/#cargo)
+    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/release/traits/#cargo)
     ---@type boolean
-    HasPassengers = { };
+    HasPassengers = nil;
 
     --- Specifies the amount of passengers.
-    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/latest/release/traits/#cargo)
+    --- **Requires Trait:** [Cargo](https://docs.openra.net/en/release/traits/#cargo)
     ---@type integer
-    PassengerCount = { };
+    PassengerCount = nil;
 
     --- Activate the actor's IonCannonPower.
-    --- **Requires Trait:** [IonCannonPower](https://docs.openra.net/en/latest/release/traits/#ioncannonpower)
+    --- **Requires Trait:** [IonCannonPower](https://docs.openra.net/en/release/traits/#ioncannonpower)
     ---@param target cpos
     ActivateIonCannon = function(target) end;
 
     --- Chronoshift a group of actors. A duration of 0 will teleport the actors permanently.
-    --- **Requires Trait:** [ChronoshiftPower](https://docs.openra.net/en/latest/release/traits/#chronoshiftpower)
+    --- **Requires Trait:** [ChronoshiftPower](https://docs.openra.net/en/release/traits/#chronoshiftpower)
     ---@param unitLocationPairs table
     ---@param duration? integer
     ---@param killCargo? boolean
     Chronoshift = function(unitLocationPairs, duration, killCargo) end;
 
     --- Disguises as the target actor.
-    --- **Requires Trait:** [Disguise](https://docs.openra.net/en/latest/release/traits/#disguise)
+    --- **Requires Trait:** [Disguise](https://docs.openra.net/en/release/traits/#disguise)
     ---@param target actor
     DisguiseAs = function(target) end;
 
     --- Disguises as the target type with the specified owner.
-    --- **Requires Trait:** [Disguise](https://docs.openra.net/en/latest/release/traits/#disguise)
+    --- **Requires Trait:** [Disguise](https://docs.openra.net/en/release/traits/#disguise)
     ---@param actorType string
     ---@param newOwner player
     DisguiseAsType = function(actorType, newOwner) end;
 
     --- Infiltrate the target actor.
-    --- **Requires Trait:** [Infiltrates](https://docs.openra.net/en/latest/release/traits/#infiltrates)
+    --- **Requires Trait:** [Infiltrates](https://docs.openra.net/en/release/traits/#infiltrates)
     ---@param target actor
     Infiltrate = function(target) end;
 }
@@ -1445,7 +1404,7 @@ local __player = {
 
     --- Add a mission objective for this player. The function returns the ID of the newly created objective, so that it can be referred to later.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param description string
     ---@param type? string
     ---@param required? boolean
@@ -1454,61 +1413,61 @@ local __player = {
 
     --- Add a primary mission objective for this player. The function returns the ID of the newly created objective, so that it can be referred to later.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param description string
     ---@return integer
     AddPrimaryObjective = function(description) end;
 
     --- Add a secondary mission objective for this player. The function returns the ID of the newly created objective, so that it can be referred to later.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param description string
     ---@return integer
     AddSecondaryObjective = function(description) end;
 
     --- Mark an objective as completed.  This needs the objective ID returned by AddObjective as argument.  When this player has completed all primary objectives, (s)he has won the game.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param id integer
     MarkCompletedObjective = function(id) end;
 
     --- Mark an objective as failed.  This needs the objective ID returned by AddObjective as argument.  Secondary objectives do not have any influence whatsoever on the outcome of the game.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param id integer
     MarkFailedObjective = function(id) end;
 
     --- Returns true if the objective has been successfully completed, false otherwise.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param id integer
     ---@return boolean
     IsObjectiveCompleted = function(id) end;
 
     --- Returns true if the objective has been failed, false otherwise.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param id integer
     ---@return boolean
     IsObjectiveFailed = function(id) end;
 
     --- Returns the description of an objective.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param id integer
     ---@return string
     GetObjectiveDescription = function(id) end;
 
     --- Returns the type of an objective.
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@param id integer
     ---@return string
     GetObjectiveType = function(id) end;
 
     --- Returns true if this player has lost all units/actors that have the MustBeDestroyed trait (according to the short game option).
     --- *Queued Activity*
-    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/latest/release/traits/#missionobjectives)
+    --- **Requires Trait:** [MissionObjectives](https://docs.openra.net/en/release/traits/#missionobjectives)
     ---@return boolean
     HasNoRequiredUnits = function() end;
 
@@ -1529,9 +1488,9 @@ local __player = {
     ---@return boolean
     AcceptsCondition = function(condition) end;
 
-    --- **Requires Trait:** [PlayerExperience](https://docs.openra.net/en/latest/release/traits/#playerexperience)
+    --- **Requires Trait:** [PlayerExperience](https://docs.openra.net/en/release/traits/#playerexperience)
     ---@type integer
-    Experience = { };
+    Experience = nil;
 
     --- Returns all living actors staying inside the world for this player.
     ---@return actor[]
@@ -1558,124 +1517,124 @@ local __player = {
 
     --- The player's internal name.
     ---@type string
-    InternalName = { };
+    InternalName = nil;
 
     --- The player's name.
     ---@type string
-    Name = { };
+    Name = nil;
 
     --- The player's color.
     ---@type color
-    Color = { };
+    Color = nil;
 
     --- The player's faction.
     ---@type string
-    Faction = { };
+    Faction = nil;
 
     --- The player's spawnpoint ID.
     ---@type integer
-    Spawn = { };
+    Spawn = nil;
 
     --- The player's home/starting location.
     ---@type cpos
-    HomeLocation = { };
+    HomeLocation = nil;
 
     --- The player's team ID.
     ---@type integer
-    Team = { };
+    Team = nil;
 
     --- The player's handicap level.
     ---@type integer
-    Handicap = { };
+    Handicap = nil;
 
     --- Returns true if the player is a bot.
     ---@type boolean
-    IsBot = { };
+    IsBot = nil;
 
     --- Returns true if the player is non combatant.
     ---@type boolean
-    IsNonCombatant = { };
+    IsNonCombatant = nil;
 
     --- Returns true if the player is the local player.
     ---@type boolean
-    IsLocalPlayer = { };
+    IsLocalPlayer = nil;
 
     --- The combined value of units killed by this player.
-    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/latest/release/traits/#playerstatistics)
+    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/release/traits/#playerstatistics)
     ---@type integer
-    KillsCost = { };
+    KillsCost = nil;
 
     --- The combined value of all units lost by this player.
-    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/latest/release/traits/#playerstatistics)
+    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/release/traits/#playerstatistics)
     ---@type integer
-    DeathsCost = { };
+    DeathsCost = nil;
 
     --- The total number of units killed by this player.
-    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/latest/release/traits/#playerstatistics)
+    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/release/traits/#playerstatistics)
     ---@type integer
-    UnitsKilled = { };
+    UnitsKilled = nil;
 
     --- The total number of units lost by this player.
-    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/latest/release/traits/#playerstatistics)
+    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/release/traits/#playerstatistics)
     ---@type integer
-    UnitsLost = { };
+    UnitsLost = nil;
 
     --- The total number of buildings killed by this player.
-    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/latest/release/traits/#playerstatistics)
+    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/release/traits/#playerstatistics)
     ---@type integer
-    BuildingsKilled = { };
+    BuildingsKilled = nil;
 
     --- The total number of buildings lost by this player.
-    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/latest/release/traits/#playerstatistics)
+    --- **Requires Trait:** [PlayerStatistics](https://docs.openra.net/en/release/traits/#playerstatistics)
     ---@type integer
-    BuildingsLost = { };
+    BuildingsLost = nil;
 
     --- Triggers low power for the chosen amount of ticks.
-    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/latest/release/traits/#powermanager)
+    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
     ---@param ticks integer
     TriggerPowerOutage = function(ticks) end;
 
     --- Returns the total of the power the player has.
-    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/latest/release/traits/#powermanager)
+    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
     ---@type integer
-    PowerProvided = { };
+    PowerProvided = nil;
 
     --- Returns the power used by the player.
-    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/latest/release/traits/#powermanager)
+    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
     ---@type integer
-    PowerDrained = { };
+    PowerDrained = nil;
 
     --- Returns the player's power state ("Normal", "Low" or "Critical").
-    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/latest/release/traits/#powermanager)
+    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
     ---@type string
-    PowerState = { };
+    PowerState = nil;
 
     --- Build the specified set of actors using classic (RA-style) production queues. The function will return true if production could be started, false otherwise. If an actionFunc is given, it will be called as actionFunc(Actor[] actors) once production of all actors has been completed. The actors array is guaranteed to only contain alive actors. Note: This function will fail to work when called during the first tick.
-    --- **Requires Traits:** [ClassicProductionQueue](https://docs.openra.net/en/latest/release/traits/#classicproductionqueue), [ScriptTriggers](https://docs.openra.net/en/latest/release/traits/#scripttriggers)
+    --- **Requires Traits:** [ClassicProductionQueue](https://docs.openra.net/en/release/traits/#classicproductionqueue), [ScriptTriggers](https://docs.openra.net/en/release/traits/#scripttriggers)
     ---@param actorTypes string[]
     ---@param actionFunc? function
     ---@return boolean
     Build = function(actorTypes, actionFunc) end;
 
     --- Check whether the production queue that builds this type of actor is currently busy. Note: it does not check whether this particular type of actor is being produced.
-    --- **Requires Traits:** [ClassicProductionQueue](https://docs.openra.net/en/latest/release/traits/#classicproductionqueue), [ScriptTriggers](https://docs.openra.net/en/latest/release/traits/#scripttriggers)
+    --- **Requires Traits:** [ClassicProductionQueue](https://docs.openra.net/en/release/traits/#classicproductionqueue), [ScriptTriggers](https://docs.openra.net/en/release/traits/#scripttriggers)
     ---@param actorType string
     ---@return boolean
     IsProducing = function(actorType) end;
 
     --- The amount of harvestable resources held by the player.
-    --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/latest/release/traits/#playerresources)
+    --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/release/traits/#playerresources)
     ---@type integer
-    Resources = { };
+    Resources = nil;
 
     --- The maximum resource storage of the player.
-    --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/latest/release/traits/#playerresources)
+    --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/release/traits/#playerresources)
     ---@type integer
-    ResourceCapacity = { };
+    ResourceCapacity = nil;
 
     --- The amount of cash held by the player.
-    --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/latest/release/traits/#playerresources)
+    --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/release/traits/#playerresources)
     ---@type integer
-    Cash = { };
+    Cash = nil;
 }
 
