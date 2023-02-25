@@ -30,6 +30,8 @@ function Tick() end
 
 ---@class wangle
 ---@field Angle integer
+---@operator add(wangle): wangle
+---@operator sub(wangle): wangle
 
 ---@class wdist
 ---@field Length integer
@@ -38,10 +40,14 @@ function Tick() end
 ---@field X integer
 ---@field Y integer
 ---@field Z integer
+---@operator add(wvec): wvec
+---@operator sub(wvec): wvec
 
 ---@class cvec
 ---@field X integer
 ---@field Y integer
+---@operator add(cvec): cvec
+---@operator sub(cvec): cvec
 
 ---@class color
 local color = { };
