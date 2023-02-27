@@ -1,5 +1,7 @@
+'use strict';
+
 /*
- Copyright 2021 The OpenRA Developers (see AUTHORS)
+ Copyright (c) The OpenRA Developers and Contributors
  This file is part of OpenRA, which is free software. It is made
  available to you under the terms of the GNU General Public License
  as published by the Free Software Foundation, either version 3 of
@@ -10,10 +12,48 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import { isOpenRaInstallationFolder, isOpenRaModSdkRepositoryFolder, isOpenRaRepositoryFolder } from './folderUtils';
 
 export async function activate(context: vscode.ExtensionContext) {
 
-	const apiPath = path.resolve(context.extensionPath, "api");
+	// Only activate if the current workspace is an OpenRA-related one.
+	// Using ORAIDE's language server's checks for "is this an OpenRA folder / OpenRA ModSDK folder / etc." might be a bit much,
+	// so using a simpler version of the check, inspired by the ORAIDE VSCode extension.
+	const modFiles = await vscode.workspace.findFiles('**/mod.yaml');
+	if (!modFiles.some(f => fs.readFileSync(f.fsPath, 'utf8').includes('\t'))) {
+		return;
+	}
+
+	let openRaVersion = "dev";
+	
+	// Try to guess what version of OpenRA this is.
+	// If it is an OpenRA repository or an install folder, there will be a "VERSION" file.
+	if (await isOpenRaRepositoryFolder() || await isOpenRaInstallationFolder()) {
+		const versionFile = await vscode.workspace.findFiles("VERSION");
+		openRaVersion = fs.readFileSync(versionFile[0].fsPath, 'utf8').trim();
+	}
+	// If it is a ModSDK repository, the mod.config file may specify an engine version we can use.
+	else if (await isOpenRaModSdkRepositoryFolder()) {
+		const modConfigFile = await vscode.workspace.findFiles("mod.config");
+		const configString = fs.readFileSync(modConfigFile[0].fsPath, 'utf8');
+		const engineVersion = configString.match("\\nENGINE_VERSION=\"(.*)\"");
+
+		if (engineVersion !== null && engineVersion.length > 1) {
+			openRaVersion = engineVersion[1];
+		}
+	}
+
+	// If it is a development version of the repository, just guesstimate it's likely the one we have (hopefully).
+	if (openRaVersion === "{DEV_VERSION}") {
+		openRaVersion = "dev"
+	}
+
+	let apiPath = path.resolve(context.extensionPath, "api", openRaVersion);
+	if (!fs.existsSync(apiPath)) {
+		openRaVersion = "dev";
+		apiPath = path.resolve(context.extensionPath, "api", openRaVersion);
+	}
+
 	const config = vscode.workspace.getConfiguration("Lua");
 	const mapPath = path.resolve(context.storagePath as string, "map");
 	fs.mkdirSync(mapPath, { recursive: true } );
@@ -29,13 +69,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		&& (value?.workspaceValue === undefined || value.workspaceValue === null || Object.keys(value.workspaceValue as Object).length === 0)
 		&& (value?.workspaceFolderValue === undefined || value.workspaceFolderValue === null || Object.keys(value.workspaceFolderValue as Object).length === 0)) {
 
-			// Only set if the current workspace is an OpenRA-related one.
-			// Using ORAIDE's language server's checks for "is this an OpenRA folder / OpenRA ModSDK folder / etc." might be a bit much,
-			// so using a simpler version of the check, inspired by the ORAIDE VSCode extension.
-			const luaFiles = await vscode.workspace.findFiles('**/mod.yaml');
-			if (luaFiles.some(f => fs.readFileSync(f.fsPath, 'utf8').includes('\t'))) {
-				await baseLuaExtensionConfiguration.update("diagnostics.groupFileStatus", { global: "Opened" }, false);
-			}
+		await baseLuaExtensionConfiguration.update("diagnostics.groupFileStatus", { global: "Opened" }, false);
 	}
 
 	for (const document of vscode.workspace.textDocuments) {
