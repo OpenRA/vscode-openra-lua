@@ -2,9 +2,18 @@
 	"name": "vscode-openra-lua",
 	"displayName": "OpenRA Lua Language Extension",
 	"description": "Adds game scripting API and map globals.",
-	"categories": [ "Programming Languages", "Snippets" ],
-	"tags": [ "rts", "strategy", "game", "mission", "scripting" ],
-	"version": "1.0.0",
+	"categories": [
+		"Programming Languages",
+		"Snippets"
+	],
+	"tags": [
+		"rts",
+		"strategy",
+		"game",
+		"mission",
+		"scripting"
+	],
+	"version": "1.1.0",
 	"publisher": "openra",
 	"private": false,
 	"license": "GPL-3.0",
