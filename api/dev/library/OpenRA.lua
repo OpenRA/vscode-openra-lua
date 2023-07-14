@@ -430,6 +430,7 @@ Map = {
     ActorsWithTag = function(tag) end;
 
     --- Returns the location of the bottom-right corner of the map (assuming zero terrain height).
+    ---@deprecated This function will be removed in future versions. Use Map.ActorsInWorld instead.
     ---@type wpos
     BottomRight = nil;
 
@@ -468,6 +469,12 @@ Map = {
     ---@return any
     LobbyOption = function(id) end;
 
+    --- Returns the value of a `ScriptLobbyDropdown` selected in the game lobby or fallback to a default value.
+    ---@param id string
+    ---@param fallback string
+    ---@return any
+    LobbyOptionOrDefault = function(id, fallback) end;
+
     --- Returns the actor that was specified with a given name in the map file (or nil, if the actor is dead or not found).
     ---@param actorName string
     ---@return actor
@@ -491,6 +498,7 @@ Map = {
     TerrainType = function(cell) end;
 
     --- Returns the location of the top-left corner of the map (assuming zero terrain height).
+    ---@deprecated This function will be removed in future versions. Use Map.ActorsInWorld instead.
     ---@type wpos
     TopLeft = nil;
 }
@@ -499,8 +507,8 @@ Map = {
 Media = {
 
     --- Displays a debug message to the player, if "Show Map Debug Messages" is checked in the settings.
-    ---@param text string
-    Debug = function(text) end;
+    ---@param format string
+    Debug = function(format) end;
 
     --- Display a text message to all players.
     ---@param text string
@@ -604,7 +612,7 @@ Reinforcements = {
     --- Send reinforcements in a transport. A transport can be a ground unit (APC etc.), ships and aircraft. The first member of the entryPath array will be the spawnpoint for the transport, while the last one will be its destination. The last member of the exitPath array is be the place where the transport will be removed from the game. When the transport has reached the destination, it will unload its cargo unless a custom actionFunc has been supplied. Afterwards, the transport will follow the exitPath and leave the map, unless a custom exitFunc has been supplied. actionFunc will be called as actionFunc(Actor transport, Actor[] cargo). exitFunc will be called as exitFunc(Actor transport). dropRange determines how many cells away the transport will try to land if the actual destination is blocked (if the transport is an aircraft). Returns a table in which the first value is the transport, and the second a table containing the deployed units.
     ---@param owner player
     ---@param actorType string
-    ---@param cargoTypes string[]|nil
+    ---@param cargoTypes string[]
     ---@param entryPath cpos[]
     ---@param exitPath? cpos[]
     ---@param actionFunc? function
@@ -623,18 +631,18 @@ Trigger = {
     AfterDelay = function(delay, func) end;
 
     --- Removes the specified trigger from this actor. Note that the removal will only take effect at the end of a tick, so you must not add new triggers at the same time that you are calling this function.
-    ---@param a actor
+    ---@param actor actor
     ---@param triggerName string
-    Clear = function(a, triggerName) end;
+    Clear = function(actor, triggerName) end;
 
     --- Removes all triggers from this actor. Note that the removal will only take effect at the end of a tick, so you must not add new triggers at the same time that you are calling this function.
-    ---@param a actor
-    ClearAll = function(a) end;
+    ---@param actor actor
+    ClearAll = function(actor) end;
 
     --- Call a function when this actor is added to the world. The callback function will be called as func(Actor self).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnAddedToWorld = function(a, func) end;
+    OnAddedToWorld = function(actor, func) end;
 
     --- Call a function when all of the actors in a group are killed. The callback function will be called as func().
     ---@param actors actor[]
@@ -661,19 +669,19 @@ Trigger = {
     OnAnyProduction = function(func) end;
 
     --- Call a function when this actor is captured. The callback function will be called as func(Actor self, Actor captor, Player oldOwner, Player newOwner).
-    ---@param a actor
+    ---@param actors actor
     ---@param func function
-    OnCapture = function(a, func) end;
+    OnCapture = function(actors, func) end;
 
     --- Call a function when the actor is damaged. The callback function will be called as func(Actor self, Actor attacker, int damage).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnDamaged = function(a, func) end;
+    OnDamaged = function(actor, func) end;
 
     --- Call a function when this actor is discovered by an enemy or a player with a Neutral stance. The callback function will be called as func(Actor discovered, Player discoverer). The player actor needs the 'EnemyWatcher' trait. The actors to discover need the 'AnnounceOnSeen' trait.
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnDiscovered = function(a, func) end;
+    OnDiscovered = function(actor, func) end;
 
     --- Call a function when a ground-based actor enters this cell footprint. Returns the trigger id for later removal using RemoveFootprintTrigger(int id). The callback function will be called as func(Actor a, int id).
     ---@param cells cpos[]
@@ -702,24 +710,24 @@ Trigger = {
     OnExitedProximityTrigger = function(pos, range, func) end;
 
     --- Call a function each tick that the actor is idle. The callback function will be called as func(Actor self).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnIdle = function(a, func) end;
+    OnIdle = function(actor, func) end;
 
     --- Call a function when this actor is infiltrated. The callback function will be called as func(Actor self, Actor infiltrator).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnInfiltrated = function(a, func) end;
+    OnInfiltrated = function(actor, func) end;
 
     --- Call a function when the actor is killed. The callback function will be called as func(Actor self, Actor killer).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnKilled = function(a, func) end;
+    OnKilled = function(actor, func) end;
 
     --- Call a function when this actor is killed or captured. The callback function will be called as func().
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnKilledOrCaptured = function(a, func) end;
+    OnKilledOrCaptured = function(actor, func) end;
 
     --- Call a function when this player is assigned a new objective. The callback function will be called as func(Player player, int objectiveID).
     ---@param player player
@@ -737,14 +745,14 @@ Trigger = {
     OnObjectiveFailed = function(player, func) end;
 
     --- Call a function for each passenger when it enters a transport. The callback function will be called as func(Actor transport, Actor passenger).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnPassengerEntered = function(a, func) end;
+    OnPassengerEntered = function(actor, func) end;
 
     --- Call a function for each passenger when it exits a transport. The callback function will be called as func(Actor transport, Actor passenger).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnPassengerExited = function(a, func) end;
+    OnPassengerExited = function(actor, func) end;
 
     --- Call a function when this player is discovered by an enemy or neutral player. The callback function will be called as func(Player discovered, Player discoverer, Actor discoveredActor).The player actor needs the 'EnemyWatcher' trait. The actors to discover need the 'AnnounceOnSeen' trait.
     ---@param discovered player
@@ -762,19 +770,19 @@ Trigger = {
     OnPlayerWon = function(player, func) end;
 
     --- Call a function when this actor produces another actor. The callback function will be called as func(Actor producer, Actor produced).
-    ---@param a actor
+    ---@param actors actor
     ---@param func function
-    OnProduction = function(a, func) end;
+    OnProduction = function(actors, func) end;
 
     --- Call a function when this actor is removed from the world. The callback function will be called as func(Actor self).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnRemovedFromWorld = function(a, func) end;
+    OnRemovedFromWorld = function(actor, func) end;
 
     --- Call a function when this actor is sold. The callback function will be called as func(Actor self).
-    ---@param a actor
+    ---@param actor actor
     ---@param func function
-    OnSold = function(a, func) end;
+    OnSold = function(actor, func) end;
 
     --- Call a function when the game timer expires. The callback function will be called as func().
     ---@param func function
@@ -817,6 +825,12 @@ Utils = {
     ---@param func function
     ---@return boolean
     Any = function(collection, func) end;
+
+    --- Concatenates two Lua tables into a single table.
+    ---@param firstCollection table
+    ---@param secondCollection table
+    ---@return table
+    Concat = function(firstCollection, secondCollection) end;
 
     --- Calls a function on every element in a collection.
     ---@param collection table
@@ -973,7 +987,7 @@ local __actor = {
     ---@param target actor
     Capture = function(target) end;
 
-    --- Checks if the target actor can be catured.
+    --- Checks if the target actor can be captured.
     --- **Requires Trait:** [CaptureManager](https://docs.openra.net/en/release/traits/#capturemanager)
     ---@param target actor
     ---@return boolean
@@ -1622,6 +1636,11 @@ local __player = {
     --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
     ---@type string
     PowerState = nil;
+
+    --- Whether the player should receive a notification when low on power.
+    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
+    ---@type boolean
+    PlayLowPowerNotification = nil;
 
     --- Build the specified set of actors using classic (RA-style) production queues. The function will return true if production could be started, false otherwise. If an actionFunc is given, it will be called as actionFunc(Actor[] actors) once production of all actors has been completed. The actors array is guaranteed to only contain alive actors. Note: This function will fail to work when called during the first tick.
     --- **Requires Traits:** [ClassicProductionQueue](https://docs.openra.net/en/release/traits/#classicproductionqueue), [ScriptTriggers](https://docs.openra.net/en/release/traits/#scripttriggers)
