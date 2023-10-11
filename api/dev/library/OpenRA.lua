@@ -3,8 +3,10 @@
 -- See https://docs.openra.net/en/latest/release/lua/ for human readable documentation.
 
 --- This file only lists function "signatures", causing Lua Diagnostics errors: "Annotations specify that a return value is required here."
---- Disable that specific error for the entire file.
+--- and Lua Diagnostics warnings "Unused local" for the functions' parameters.
+--- Disable those specific errors for the entire file.
 ---@diagnostic disable: missing-return
+---@diagnostic disable: unused-local
 
 
 --- This function is triggered once, after the map is loaded.
@@ -55,29 +57,30 @@ local color = { };
 
 ---A list of ActorInit implementations that can be used by Lua scripts.
 ---@class initTable
----@field Location cpos
+---@field Location cpos?
 ---@field Owner player | string
----@field Facing wangle
----@field CreationActivityDelay integer
----@field SubCell SubCell
----@field CenterPosition wpos
----@field Faction string
----@field EffectiveOwner player
----@field Stance UnitStance
----@field FreeActor boolean
----@field ParentActor actor
----@field LineBuildDirection LineBuildDirection
----@field LineBuildParent actor[]
----@field Cargo string[]
----@field DeployState DeployState
----@field Experience integer
----@field Health integer
----@field HuskSpeed integer
----@field Plug string
----@field ProductionSpawnLocation cpos
----@field ScriptTags string[]
----@field TurretFacing wangle
----@field BodyAnimationFrame integer
+---@field Facing wangle?
+---@field CreationActivityDelay integer?
+---@field SubCell SubCell?
+---@field CenterPosition wpos?
+---@field Faction string?
+---@field EffectiveOwner player?
+---@field Stance UnitStance?
+---@field FreeActor boolean?
+---@field ParentActor actor?
+---@field LineBuildDirection LineBuildDirection?
+---@field LineBuildParent actor[]?
+---@field Cargo string[]?
+---@field DeployState DeployState?
+---@field Experience integer?
+---@field Health integer?
+---@field HuskSpeed integer?
+---@field Plug string?
+---@field RallyPoint cpos[]?
+---@field ProductionSpawnLocation cpos?
+---@field ScriptTags string[]?
+---@field TurretFacing wangle?
+---@field BodyAnimationFrame integer?
 
 
 ---@enum SubCell
@@ -928,8 +931,22 @@ WVec = {
     Zero = nil;
 }
 
-
 ---@class actor
+--- Specifies whether the actor is in the world.
+---@field IsInWorld boolean
+--- The player that owns the actor.
+---@field Owner player
+--- Current actor stance. Returns nil if this actor doesn't support stances.
+---@field Stance string
+--- Current health of the actor.
+--- **Requires Trait:** [IHealth](https://docs.openra.net/en/release/traits/#ihealth)
+---@field Health integer
+--- Query or set a factory's rally point.
+--- **Requires Trait:** [RallyPoint](https://docs.openra.net/en/release/traits/#rallypoint)
+---@field RallyPoint cpos
+--- Query or set the factory's primary building status.
+--- **Requires Trait:** [PrimaryBuilding](https://docs.openra.net/en/release/traits/#primarybuilding)
+---@field IsPrimaryBuilding boolean
 local __actor = {
 
     --- Fly within the cell grid.
@@ -1010,7 +1027,7 @@ local __actor = {
     ---@type boolean
     IsCloaked = nil;
 
-    --- Seek out and attack nearby targets.
+    --- Ignoring visibility, find the closest hostile target and attack move to within 2 cells of it.
     --- *Queued Activity*
     --- **Requires Traits:** [AttackBase](https://docs.openra.net/en/release/traits/#attackbase), [IMove](https://docs.openra.net/en/release/traits/#imove)
     Hunt = function() end;
@@ -1133,10 +1150,6 @@ local __actor = {
     ---@param delay? integer
     Flash = function(color, count, interval, delay) end;
 
-    --- Specifies whether the actor is in the world.
-    ---@type boolean
-    IsInWorld = nil;
-
     --- Specifies whether the actor is alive or dead.
     ---@type boolean
     IsDead = nil;
@@ -1144,10 +1157,6 @@ local __actor = {
     --- Specifies whether the actor is idle (not performing any activities).
     ---@type boolean
     IsIdle = nil;
-
-    --- The player that owns the actor.
-    ---@type player
-    Owner = nil;
 
     --- The type of the actor (e.g. "e1").
     ---@type string
@@ -1206,10 +1215,6 @@ local __actor = {
     ---@type wangle
     Facing = nil;
 
-    --- Current actor stance. Returns nil if this actor doesn't support stances.
-    ---@type string
-    Stance = nil;
-
     --- The actor's tooltip name. Returns nil if the actor has no tooltip.
     ---@type string
     TooltipName = nil;
@@ -1234,15 +1239,16 @@ local __actor = {
     ---@param damageTypes? any
     Kill = function(damageTypes) end;
 
-    --- Current health of the actor.
-    --- **Requires Trait:** [IHealth](https://docs.openra.net/en/release/traits/#ihealth)
-    ---@type integer
-    Health = nil;
-
     --- Maximum health of the actor.
     --- **Requires Trait:** [IHealth](https://docs.openra.net/en/release/traits/#ihealth)
     ---@type integer
     MaxHealth = nil;
+
+    --- Enter the target actor to repair it instantly.
+    --- *Queued Activity*
+    --- **Requires Traits:** [IMove](https://docs.openra.net/en/release/traits/#imove), [InstantlyRepairs](https://docs.openra.net/en/release/traits/#instantlyrepairs)
+    ---@param target actor
+    InstantlyRepair = function(target) end;
 
     --- Moves within the cell grid. closeEnough defines an optional range (in cells) that will be considered close enough to complete the activity.
     --- *Queued Activity*
@@ -1312,16 +1318,6 @@ local __actor = {
     ---@param factionVariant? string
     ---@param productionType? string
     Produce = function(actorType, factionVariant, productionType) end;
-
-    --- Query or set a factory's rally point.
-    --- **Requires Trait:** [RallyPoint](https://docs.openra.net/en/release/traits/#rallypoint)
-    ---@type cpos
-    RallyPoint = nil;
-
-    --- Query or set the factory's primary building status.
-    --- **Requires Trait:** [PrimaryBuilding](https://docs.openra.net/en/release/traits/#primarybuilding)
-    ---@type boolean
-    IsPrimaryBuilding = nil;
 
     --- Build the specified set of actors using a TD-style (per building) production queue. The function will return true if production could be started, false otherwise. If an actionFunc is given, it will be called as actionFunc(Actor[] actors) once production of all actors has been completed.  The actors array is guaranteed to only contain alive actors.
     --- **Requires Traits:** [ProductionQueue](https://docs.openra.net/en/release/traits/#productionqueue), [ScriptTriggers](https://docs.openra.net/en/release/traits/#scripttriggers)
@@ -1393,11 +1389,6 @@ local __actor = {
     ---@type integer
     PassengerCount = nil;
 
-    --- Activate the actor's IonCannonPower.
-    --- **Requires Trait:** [IonCannonPower](https://docs.openra.net/en/release/traits/#ioncannonpower)
-    ---@param target cpos
-    ActivateIonCannon = function(target) end;
-
     --- Chronoshift a group of actors. A duration of 0 will teleport the actors permanently.
     --- **Requires Trait:** [ChronoshiftPower](https://docs.openra.net/en/release/traits/#chronoshiftpower)
     ---@param unitLocationPairs table
@@ -1420,9 +1411,25 @@ local __actor = {
     --- **Requires Trait:** [Infiltrates](https://docs.openra.net/en/release/traits/#infiltrates)
     ---@param target actor
     Infiltrate = function(target) end;
+
+    --- Activate the actor's IonCannonPower.
+    --- **Requires Trait:** [IonCannonPower](https://docs.openra.net/en/release/traits/#ioncannonpower)
+    ---@param target cpos
+    ActivateIonCannon = function(target) end;
 }
 
 ---@class player
+--- **Requires Trait:** [PlayerExperience](https://docs.openra.net/en/release/traits/#playerexperience)
+---@field Experience integer
+--- Whether the player should receive a notification when low on power.
+--- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
+---@field PlayLowPowerNotification boolean
+--- The amount of harvestable resources held by the player.
+--- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/release/traits/#playerresources)
+---@field Resources integer
+--- The amount of cash held by the player.
+--- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/release/traits/#playerresources)
+---@field Cash integer
 local __player = {
 
     --- Returns true if the player is allied with the other player.
@@ -1515,10 +1522,6 @@ local __player = {
     ---@param condition string
     ---@return boolean
     AcceptsCondition = function(condition) end;
-
-    --- **Requires Trait:** [PlayerExperience](https://docs.openra.net/en/release/traits/#playerexperience)
-    ---@type integer
-    Experience = nil;
 
     --- Returns all living actors staying inside the world for this player.
     ---@return actor[]
@@ -1637,11 +1640,6 @@ local __player = {
     ---@type string
     PowerState = nil;
 
-    --- Whether the player should receive a notification when low on power.
-    --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
-    ---@type boolean
-    PlayLowPowerNotification = nil;
-
     --- Build the specified set of actors using classic (RA-style) production queues. The function will return true if production could be started, false otherwise. If an actionFunc is given, it will be called as actionFunc(Actor[] actors) once production of all actors has been completed. The actors array is guaranteed to only contain alive actors. Note: This function will fail to work when called during the first tick.
     --- **Requires Traits:** [ClassicProductionQueue](https://docs.openra.net/en/release/traits/#classicproductionqueue), [ScriptTriggers](https://docs.openra.net/en/release/traits/#scripttriggers)
     ---@param actorTypes string[]
@@ -1655,19 +1653,9 @@ local __player = {
     ---@return boolean
     IsProducing = function(actorType) end;
 
-    --- The amount of harvestable resources held by the player.
-    --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/release/traits/#playerresources)
-    ---@type integer
-    Resources = nil;
-
     --- The maximum resource storage of the player.
     --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/release/traits/#playerresources)
     ---@type integer
     ResourceCapacity = nil;
-
-    --- The amount of cash held by the player.
-    --- **Requires Trait:** [PlayerResources](https://docs.openra.net/en/release/traits/#playerresources)
-    ---@type integer
-    Cash = nil;
 }
 
