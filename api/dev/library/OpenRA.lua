@@ -770,6 +770,11 @@ Trigger = {
     ---@param func fun(producer: actor, produced: actor, productionType: string)
     OnAnyProduction = function(func) end;
 
+    --- Call a function when this player places a building. The callback function will be called as func(p: player, placed: actor).
+    ---@param player player
+    ---@param func fun(p: player, placed: actor)
+    OnBuildingPlaced = function(player, func) end;
+
     --- Call a function when this actor is captured. The callback function will be called as func(self: actor, captor: actor, oldOwner: player, newOwner: player).
     ---@param actor actor
     ---@param func fun(self: actor, captor: actor, oldOwner: player, newOwner: player)
@@ -885,6 +890,11 @@ Trigger = {
     ---@param actor actor
     ---@param func fun(self: actor)
     OnSold = function(actor, func) end;
+
+    --- Call a function when a Support Power is activated by this actor. The callback function will be called as func(self: actor, orderName: string).
+    ---@param actor actor
+    ---@param func func(self: actor, orderName: string)
+    OnSupportPowerActivated = function(actor, func) end;
 
     --- Call a function when the game timer expires. The callback function will be called as func().
     ---@param func fun()
@@ -1733,7 +1743,7 @@ local __player = {
     ---@type integer
     BuildingsLost = nil;
 
-    --- Triggers low power for the chosen amount of ticks.
+    --- Triggers an outage for the chosen amount of ticks. Of this player's actors, only those with the `AffectedByPowerOutage` trait are affected.
     --- **Requires Trait:** [PowerManager](https://docs.openra.net/en/release/traits/#powermanager)
     ---@param ticks integer
     TriggerPowerOutage = function(ticks) end;
